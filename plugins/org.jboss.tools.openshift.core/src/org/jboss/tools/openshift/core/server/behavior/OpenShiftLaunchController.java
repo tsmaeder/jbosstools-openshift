@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.debug.core.IJavaDebugTarget;
 import org.eclipse.jdt.debug.core.IJavaHotCodeReplaceListener;
 import org.eclipse.jdt.launching.SocketUtil;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerUtil;
 import org.jboss.ide.eclipse.as.wtp.core.server.behavior.AbstractSubsystemController;
@@ -85,7 +86,11 @@ public class OpenShiftLaunchController extends AbstractSubsystemController
 		
 		IDeploymentConfig dc = OpenShiftServerUtils.getDeploymentConfig(server);
 		if (dc == null) {
-			throw toCoreException("No deployment config was found for "+server.getName());
+			throw toCoreException(NLS.bind("Could not find deployment config was for {0}. "
+					+ "Your server adapter refers to an inexistant service"
+					+ ", there are no pods for it "
+					+ "or there are no labels on those pods pointing to the wanted deployment config.", 
+					server.getName()));
 		}
 		
 		DebuggingContext debugContext = OpenShiftDebugUtils.get().getDebuggingContext(dc);
